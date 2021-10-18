@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 
+=======
+# Code for the client
+##
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
 import hashlib
 import logging
 import math
@@ -8,6 +13,7 @@ import threading
 import time
 from tqdm import tqdm
 from datetime import datetime
+<<<<<<< HEAD
 
 IP = socket.gethostbyname(socket.gethostname())
 PORT = 4456
@@ -16,6 +22,21 @@ BUFFER_SIZE = 4096
 host = '192.168.1.56'
 puertoUDP = 60002
 File_path = "ArchivosRecibidos/"
+=======
+from threading import Thread
+
+IP = socket.gethostbyname(socket.gethostname())
+PORT = 4456
+BUFFER_SIZE = 4096
+# UDP Settings
+udpPort = 4457
+udpBUFFER_SIZE = 64000
+ADDRESS = (IP, PORT)
+Log_path = "data/Logs/"
+FILE1 = 'data/Files/100MB.txt'
+FILE2 = 'data/Files/250MB.txt'
+
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
 
 HELLO = 'Hello'
 READY = 'Ready'
@@ -24,7 +45,11 @@ OK = 'Ok'
 HASH = 'HashOk'
 ERROR = 'Error'
 COMPLETE = 'Completado'
+<<<<<<< HEAD
 AKN_NAME = 'Name'
+=======
+START_UDP = "UDP"
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
 
 
 class ClientProtocol:
@@ -33,8 +58,14 @@ class ClientProtocol:
         # UDP
         self.udp_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_server_socket.settimeout(5)
+<<<<<<< HEAD
         self.udp_server_address = (host, puertoUDP)
 
+=======
+        self.udp_server_address = (IP, udpPort)
+
+        # TCP
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
         self.id = 0
         self.clients_number = 0
         self.server_file_name = ''
@@ -82,7 +113,11 @@ class ClientProtocol:
         B = client_socket.recv(BUFFER_SIZE)
         b = B.decode('utf-8')
         self.bytes_received += len(B)
+<<<<<<< HEAD
       #  self.packages_received += 1
+=======
+        #  self.packages_received += 1
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
         return b
 
     def send_to_server(self, client_socket, segment, print_message):
@@ -105,9 +140,18 @@ class ClientProtocol:
         client_socket = socket.socket()
 
         try:
+<<<<<<< HEAD
             client_socket.connect((host, puertoUDP))
             self.port = client_socket.getsockname()[1]
             self.ip = socket.gethostname()
+=======
+            client_socket.connect((IP, PORT))
+            self.PORT = client_socket.getsockname()[1]
+            self.IP = socket.gethostname()
+
+            # UDP
+
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
         except socket.error as e:
             print('Client{} Says: error creating socket ', str(e))
 
@@ -131,9 +175,12 @@ class ClientProtocol:
                 self.send_to_server(client_socket, READY,
                                     "Client Says: communicating to server that client is ready for file transport")
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
                 reply = self.receive_from_server(client_socket)
 
                 self.verify_reply_not_null(reply, 'file name')
@@ -149,11 +196,17 @@ class ClientProtocol:
                 self.verify_reply_not_null(reply, 'file hash')
 
                 serverHash = reply
+<<<<<<< HEAD
                 self.server_file_name = reply
 
 
                 self.send_to_server(client_socket, AKN_NAME,
                                     "Client{} Says: file hash received from server: {}".format(self.id, self.server_file_name))
+=======
+
+                self.send_to_server(client_socket, OK,
+                                    "Client{} Says: file hash received from server: {}".format(self.id, serverHash))
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
 
                 self.file_size = int(self.receive_from_server(client_socket))
                 print("Client{} Says: file size received from server: {}".format(self.id, self.file_size))
@@ -161,11 +214,18 @@ class ClientProtocol:
                 self.client_file_name = "Cliente{}-Prueba-{}.{}".format(self.id, self.clients_number,
                                                                         self.server_file_name.split('.')[-1])
 
+<<<<<<< HEAD
+=======
+                # Start UDP Transmission
+                self.udp_server_socket.sendto(str.encode(START_UDP), self.udp_server_address)
+
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
                 start_time = time.time()
 
                 progress = tqdm(range(self.file_size), f" Client{self.id} receiving {self.server_file_name}", unit="B",
                                 unit_scale=True,
                                 unit_divisor=BUFFER_SIZE)
+<<<<<<< HEAD
                 with open(File_path + self.client_file_name, "wb") as f:
 
                     bReceived=0
@@ -185,6 +245,34 @@ class ClientProtocol:
                     f.close()
 
                 self.packages_received = self.file_size/BUFFER_SIZE;
+=======
+
+                bReceived = 0
+                with open(File_path + self.client_file_name, "wb") as f:
+
+                    while bReceived < self.file_size:
+
+                        # read bytes from the socket (receive)
+                        try:
+                            data, address = self.udp_server_socket.recvfrom(udpBUFFER_SIZE)
+
+                        except socket.error as e:
+                            self.success_connection = False
+                            break
+                        bytes_read = len(data)
+
+                        # write to the file the bytes we just received
+                        f.write(data)
+
+                        bReceived += bytes_read
+                        self.bytes_received += bytes_read
+
+                        progress.update(bytes_read)
+
+                    f.close()
+
+                self.packages_received = bReceived / udpBUFFER_SIZE;
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
                 self.send_to_server(client_socket, COMPLETE,
                                     "Client{} Says: file transmission is complete".format(self.id))
 
@@ -219,7 +307,11 @@ class ClientProtocol:
     def log_info_c(self):
         logging.info(
             '_____________________________________________________________________________________________________')
+<<<<<<< HEAD
         d = {1: 'yes', 2: 'no'}
+=======
+        d = {True: 'yes', False: 'no'}
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
         logging.info('Client{}: File name: {}'.format(self.id, self.server_file_name))
         logging.info('Client{}: File size: {}'.format(self.id, self.file_size))
         logging.info('Client{}: Client connection: ({}:{})'.format(self.id, self.ip, self.port))
@@ -229,7 +321,10 @@ class ClientProtocol:
         logging.info('Client{}: Packages received {}'.format(self.id, self.packages_received))
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 910efccf5f856dfe016cca920f746b5f4bc31f7f
 def main():
     c = ClientProtocol()
     c.run()
