@@ -28,6 +28,7 @@ READY = 'Ready'
 NOMBRE = 'Nombre'
 OK = 'Ok'
 HASH = 'HashOk'
+NOT_HASH = 'NotHash'
 ERROR = 'Error'
 COMPLETE = 'Completado'
 START_UDP = "UDP"
@@ -199,9 +200,7 @@ class ClientProtocol:
                                     "Client{} Says: file transmission is complete".format(self.id))
 
                 self.running_time = time.time() - start_time
-                print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+self.client_file_name )
-                print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+self.server_file_name )
-
+             
 
                 calculated_hash = self.hash_file(self.client_file_name)
                 is_valid = calculated_hash == serverHash
@@ -215,7 +214,7 @@ class ClientProtocol:
                     self.log_info_c()
                     break
                 else:
-                    self.send_to_server(client_socket, ERROR,
+                    self.send_to_server(client_socket, HASH,
                                         "File integrity could not be verified with calculated hash {}".format(
                                             calculated_hash))
                     self.log_info_c()

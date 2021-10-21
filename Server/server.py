@@ -155,7 +155,7 @@ class ServerProtocol:
                 reply = self.recibirDelCliente(connection)
                 self.verificarRespuesta(reply, HASH)
 
-                print(" Integridad del archivo verificada por el cliente {}".format(thread_id))
+                print("Confirmación por parte del cliente".format(thread_id))
 
                 connection.close()
                 self.conexionesCompletadas[thread_id - 1] = 1
