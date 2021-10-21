@@ -1,0 +1,9 @@
+INFO:root:2021-21-10 12:21:34
+INFO:root:_____________________________________________________________________________________________________
+INFO:root:Client1: File name: data/Files/100MB.txt
+INFO:root:Client1: File size: 0
+INFO:root:Client1: Client connection: (:)
+INFO:root:Client1: Successful: yes
+INFO:root:Client1: Running time: 0 s
+INFO:root:Client1: Bytes received: 28 B
+INFO:root:Client1: Packages received 0
