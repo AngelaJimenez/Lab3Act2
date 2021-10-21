@@ -96,8 +96,12 @@ class ServerProtocol:
     def enviarArchivoAlCliente(self, connection, thread_id):
         while True:
             try:
+                
                 reply = self.recibirDelCliente(connection)
+                print(reply)
+            
                 self.verificarRespuesta(reply, HELLO)
+                
 
                 self.enviarAlCliente(connection, HELLO, "El saludo del cliente {} fue recibido".format(thread_id),
                                     thread_id)
@@ -195,7 +199,7 @@ class ServerProtocol:
                         unit_scale=True,
                         unit_divisor=BUFFER_SIZE)
 
-        with open(File_path + self.fileName, 'rb') as file:
+        with open( self.fileName, 'rb') as file:
 
             while True:
                 chunk = file.read(udpBUFFER_SIZE)
@@ -218,7 +222,7 @@ class ServerProtocol:
         return int(len(packed_file))
 
     def hash_file(self):
-        file = open(File_path + self.fileName, 'rb')  
+        file = open( self.fileName, 'rb')  
 
    
         h = hashlib.sha1()
@@ -309,13 +313,14 @@ class UDPServer:
     def enviarArchivoUDP(self, thread_id, tamañoArchivo, fileName, bytesEnviados, paquetesEnviados):
         data, client_address = self.sock.recvfrom(1024)
 
+
         if data.decode('utf-8')==START_UDP:
             print("UDP empezando en la thread {}".format(thread_id))
 
         progress = tqdm(range(tamañoArchivo), f'Transferir al cliente {thread_id}', unit="B",
                         unit_scale=True,
                         unit_divisor=BUFFER_SIZE)
-        with open(File_path + fileName, 'rb') as file:
+        with open( fileName, 'rb') as file:
 
             while True:
                

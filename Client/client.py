@@ -21,7 +21,7 @@ ADDRESS = (IP, PORT)
 Log_path = "data/Logs/"
 FILE1 = 'data/Files/100MB.txt'
 FILE2 = 'data/Files/250MB.txt'
-
+File_path = "ArchivosRecibidos/"
 
 HELLO = 'Hello'
 READY = 'Ready'
@@ -67,22 +67,16 @@ class ClientProtocol:
 
     def hash_file(self, file_name):
         with open(File_path + file_name, 'rb') as file:
-            """"This function returns the SHA-1 hash
-            of the file passed into it"""
-            # make a hash object
+  
             h = hashlib.sha1()
 
-            # open file for reading in binary mode
-
-            # loop till the end of the file
             chunk = 0
             while chunk != b'':
-                # read only 1024 bytes at a time
+             
                 chunk = file.read(BUFFER_SIZE)
                 h.update(chunk)
             file.close()
 
-        # return the hex representation of digest
         return h.hexdigest()
 
     def receive_from_server(self, client_socket):
@@ -163,6 +157,7 @@ class ClientProtocol:
                 self.file_size = int(self.receive_from_server(client_socket))
                 print("Client{} Says: file size received from server: {}".format(self.id, self.file_size))
 
+
                 self.client_file_name = "Cliente{}-Prueba-{}.{}".format(self.id, self.clients_number,
                                                                         self.server_file_name.split('.')[-1])
 
@@ -176,7 +171,7 @@ class ClientProtocol:
                                 unit_divisor=BUFFER_SIZE)
 
                 bReceived = 0
-                with open(File_path + self.client_file_name, "wb") as f:
+                with open( File_path +self.client_file_name, "wb") as f:
 
                     while bReceived < self.file_size:
 
@@ -204,6 +199,9 @@ class ClientProtocol:
                                     "Client{} Says: file transmission is complete".format(self.id))
 
                 self.running_time = time.time() - start_time
+                print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+self.client_file_name )
+                print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+self.server_file_name )
+
 
                 calculated_hash = self.hash_file(self.client_file_name)
                 is_valid = calculated_hash == serverHash
