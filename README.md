@@ -1,4 +1,4 @@
-# Servidor Cliente TCP
+# Servidor Cliente UDP
 ### paso a paso 
 1. Para el uso del servidor, clone el repo en su maquina, y acceda a el proyecto mediante un editr de texto, IDE, o a consola de comandos.
 2. Debe crear los archivos llamando al archivo de python generatefiles.py, medainte este se crearan en el directorio server_data dos archivos con el nombre 100MB.txt y 250MB.txt
